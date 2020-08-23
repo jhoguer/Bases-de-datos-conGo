@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import "github.com/jhoguer/Bases-de-datos-conGo/storage"
 
 func main() {
-	fmt.Println("EDteam")
+	storage.NewPostgresDB()
+	storage.NewPostgresDB()
+	storage.NewPostgresDB()
+	storage.NewPostgresDB()
+	storage.NewPostgresDB()
+	storage.NewPostgresDB()
 }
