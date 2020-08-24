@@ -16,6 +16,7 @@ var (
 
 func NewPostgresDB() {
 	once.Do(func() {
+
 		// Lo que este aqui solo se ejecutara 1 vez
 		var err error
 		db, err = sql.Open("postgres", "postgres://jhoguer:jhon198615@localhost:5432/godb?sslmode=disable")
