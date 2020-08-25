@@ -3,6 +3,8 @@ package storage
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/jhoguer/Bases-de-datos-conGo/pkg/product"
 )
 
 const (
@@ -14,7 +16,8 @@ const (
 		created_at TIMESTAMP NOT NULL DEFAULT now(),
 		updated_at TIMESTAMP,
 		CONSTRAINT products_id_pk PRIMARY KEY (id)
-	)`
+		)`
+	psqlCreateProduct = `INSERT INTO products(name, observations, price, created_at) VALUES($1, $2, $3, $4) RETURNING id`
 )
 
 // psqlProduct used for work with postgres - product
@@ -41,5 +44,27 @@ func (p *PsqlProduct) Migrate() error {
 	}
 
 	fmt.Println("Migración de producto ejecutada correctamente")
+	return nil
+}
+
+func (p *PsqlProduct) Create(m *product.Model) error {
+	stmt, err := p.db.Prepare(psqlCreateProduct)
+
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(
+		m.Name,
+		m.Observations,
+		m.Price,
+		m.CreatedAt,
+	).Scan(&m.ID)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Se creo el producto correctamente")
 	return nil
 }

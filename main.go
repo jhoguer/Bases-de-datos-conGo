@@ -1,10 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
-	"github.com/jhoguer/Bases-de-datos-conGo/pkg/invoiceheader"
-	"github.com/jhoguer/Bases-de-datos-conGo/pkg/invoiceitem"
 	"github.com/jhoguer/Bases-de-datos-conGo/pkg/product"
 	"github.com/jhoguer/Bases-de-datos-conGo/storage"
 )
@@ -14,27 +13,42 @@ func main() {
 
 	// Creamos una struct llamada storageProduct qu tiene implementada
 	// el metodo Migrate de la interface Storage de Product
-	storageProduct := storage.NewPsqlProduct(storage.Pool())
+	// storageProduct := storage.NewPsqlProduct(storage.Pool())
 
-	// Creamos una struct serviceProduct que ya implemento el
-	// metodo Migrate
+	// // Creamos una struct serviceProduct que ya implemento el
+	// // metodo Migrate
+	// serviceProduct := product.NewService(storageProduct)
+
+	// if err := serviceProduct.Migrated(); err != nil {
+	// 	log.Fatalf("product.Migrate: %v", err)
+	// }
+
+	// // Migracion de tabla invoice_headers
+	// storageInvoiceHeader := storage.NewPsqlInvoiceHeader(storage.Pool())
+	// serviceInvoiceHeader := invoiceheader.NewService(storageInvoiceHeader)
+
+	// if err := serviceInvoiceHeader.Migrated(); err != nil {
+	// 	log.Fatalf("invoiceHeader.Migrate: %v", err)
+	// }
+
+	// // Migracion de tabla invoice_items
+	// storageInvoiceItem := storage.NewPsqlInvoiceItem(storage.Pool())
+	// serviceInvoiceItem := invoiceitem.NewService(storageInvoiceItem)
+
+	// if err := serviceInvoiceItem.Migrated(); err != nil {
+	// 	log.Fatalf("invoiceItem.Migrate: %v", err)
+	// }
+
+	storageProduct := storage.NewPsqlProduct(storage.Pool())
 	serviceProduct := product.NewService(storageProduct)
 
-	if err := serviceProduct.Migrated(); err != nil {
-		log.Fatalf("product.Migrate: %v", err)
+	m := &product.Model{
+		Name:  "Curso de Go",
+		Price: 50,
+	}
+	if err := serviceProduct.Create(m); err != nil {
+		log.Fatalf("product.Create: %v", err)
 	}
 
-	storageInvoiceHeader := storage.NewPsqlInvoiceHeader(storage.Pool())
-	serviceInvoiceHeader := invoiceheader.NewService(storageInvoiceHeader)
-
-	if err := serviceInvoiceHeader.Migrated(); err != nil {
-		log.Fatalf("invoiceHeader.Migrate: %v", err)
-	}
-
-	storageInvoiceItem := storage.NewPsqlInvoiceItem(storage.Pool())
-	serviceInvoiceItem := invoiceitem.NewService(storageInvoiceItem)
-
-	if err := serviceInvoiceItem.Migrated(); err != nil {
-		log.Fatalf("invoiceItem.Migrate: %v", err)
-	}
+	fmt.Printf("%+v\n", m)
 }
