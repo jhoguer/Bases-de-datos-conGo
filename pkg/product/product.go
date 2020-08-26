@@ -48,6 +48,5 @@ func (s *Service) Create(m *Model) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
