@@ -57,7 +57,7 @@ func (p *PsqlProduct) Create(m *product.Model) error {
 
 	err = stmt.QueryRow(
 		m.Name,
-		m.Observations,
+		stringToNull(m.Observations),
 		m.Price,
 		m.CreatedAt,
 	).Scan(&m.ID)

@@ -42,6 +42,9 @@ func (s *Service) Migrated() error {
 // Migrate is used for create a product
 func (s *Service) Create(m *Model) error {
 	m.CreatedAt = time.Now()
-	s.storage.Create(m)
+	err := s.storage.Create(m)
+	if err != nil {
+		return err
+	}
 	return nil
 }

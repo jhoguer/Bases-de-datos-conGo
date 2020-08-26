@@ -43,8 +43,9 @@ func main() {
 	serviceProduct := product.NewService(storageProduct)
 
 	m := &product.Model{
-		Name:  "Curso de Go",
-		Price: 50,
+		Name:         "Basico de Express.js",
+		Price:        80,
+		Observations: "Super Nice!",
 	}
 	if err := serviceProduct.Create(m); err != nil {
 		log.Fatalf("product.Create: %v", err)
