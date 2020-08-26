@@ -1,6 +1,8 @@
 package main
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 
@@ -58,13 +60,27 @@ func main() {
 
 	// fmt.Printf("%+v\n", m)
 
+	// storageProduct := storage.NewPsqlProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
+
+	// ms, err := serviceProduct.GetAll()
+	// if err != nil {
+	// 	log.Fatalf("product.GetAll: %v", err)
+	// }
+
+	// fmt.Println(ms)
+
 	storageProduct := storage.NewPsqlProduct(storage.Pool())
 	serviceProduct := product.NewService(storageProduct)
 
-	ms, err := serviceProduct.GetAll()
-	if err != nil {
-		log.Fatalf("product.GetAll: %v", err)
+	m, err := serviceProduct.GetById(10)
+	switch {
+	case errors.Is(err, sql.ErrNoRows):
+		fmt.Println("No hay un producto con ese id")
+	case err != nil:
+		log.Fatalf("product.GetByID: %v", err)
+	default:
+		fmt.Println(m)
 	}
 
-	fmt.Println(ms)
 }
