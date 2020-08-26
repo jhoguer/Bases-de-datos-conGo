@@ -39,22 +39,32 @@ func main() {
 	// 	log.Fatalf("invoiceItem.Migrate: %v", err)
 	// }
 
-	storageProduct := storage.NewPsqlProduct(storage.Pool())
-	serviceProduct := product.NewService(storageProduct)
+	// storageProduct := storage.NewPsqlProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
 
-	m := &product.Model{
-		Name:         "Curso de db con Go",
-		Price:        80,
-		Observations: "On fire",
-	}
+	// m := &product.Model{
+	// 	Name:         "Curso de db con Go",
+	// 	Price:        80,
+	// 	Observations: "On fire",
+	// }
 	// if err := serviceProduct.Create(m); err != nil {
 	// 	log.Fatalf("product.Create: %v", err)
 	// }
 
-	err := serviceProduct.Create(m)
+	// err := serviceProduct.Create(m)
+	// if err != nil {
+	// 	log.Fatalf("product.Create: %v", err)
+	// }
+
+	// fmt.Printf("%+v\n", m)
+
+	storageProduct := storage.NewPsqlProduct(storage.Pool())
+	serviceProduct := product.NewService(storageProduct)
+
+	ms, err := serviceProduct.GetAll()
 	if err != nil {
-		log.Fatalf("product.Create: %v", err)
+		log.Fatalf("product.GetAll: %v", err)
 	}
 
-	fmt.Printf("%+v\n", m)
+	fmt.Println(ms)
 }

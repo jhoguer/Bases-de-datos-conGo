@@ -37,11 +37,7 @@ func Pool() *sql.DB {
 	return db
 }
 
-<<<<<<< HEAD
 // Controlando los nulos
-=======
-// Manejando nulos
->>>>>>> create
 func stringToNull(s string) sql.NullString {
 	null := sql.NullString{String: s}
 	if null.String != "" {

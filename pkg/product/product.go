@@ -1,6 +1,8 @@
 package product
 
 import (
+	"fmt"
+	"strings"
 	"time"
 )
 
@@ -14,14 +16,33 @@ type Model struct {
 	UpdatedAt    time.Time
 }
 
+// Para mostrar mas ordenada la info de la BD
+func (m *Model) String() string {
+	return fmt.Sprintf(
+		"%02d | %-50s | %-20s | %5d | %10s | %10s",
+		m.ID, m.Name, m.Observations, m.Price,
+		m.CreatedAt.Format("2006-01-02"),
+		m.UpdatedAt.Format("2006-01-02"))
+}
+
 // Model slice of Model
 type Models []*Model
+
+func (m Models) String() string {
+	builder := strings.Builder{}
+	builder.WriteString(fmt.Sprintf("%02s | %-50s | %-20s | %5s | %10s | %10s\n",
+		"id", "name", "observations", "price", "created_at", "updated_at"))
+	for _, model := range m {
+		builder.WriteString(model.String() + "\n")
+	}
+	return builder.String()
+}
 
 type Storage interface {
 	Migrate() error
 	Create(*Model) error
 	// Update(*Model) error
-	// GetAll() (Models, error)
+	GetAll() (Models, error)
 	// GetByID(uint) (*Model, error)
 	// Delete(uint) error
 }
@@ -49,4 +70,10 @@ func (s *Service) Create(m *Model) error {
 		return err
 	}
 	return nil
+}
+
+// GetAll is used for get all the products
+func (s *Service) GetAll() (Models, error) {
+	m, err := s.storage.GetAll()
+	return m, err
 }
