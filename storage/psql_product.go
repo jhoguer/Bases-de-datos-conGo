@@ -17,7 +17,8 @@ const (
 		updated_at TIMESTAMP,
 		CONSTRAINT products_id_pk PRIMARY KEY (id)
 		)`
-	psqlCreateProduct = `INSERT INTO products(name, observations, price, created_at) VALUES($1, $2, $3, $4) RETURNING id`
+	psqlCreateProduct = `INSERT INTO products(name, observations, price, created_at) 
+												VALUES($1, $2, $3, $4) RETURNING id`
 )
 
 // psqlProduct used for work with postgres - product
@@ -57,10 +58,11 @@ func (p *PsqlProduct) Create(m *product.Model) error {
 
 	err = stmt.QueryRow(
 		m.Name,
-		m.Observations,
+		stringToNull(m.Observations),
 		m.Price,
 		m.CreatedAt,
 	).Scan(&m.ID)
+
 	if err != nil {
 		return err
 	}
