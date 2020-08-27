@@ -25,12 +25,13 @@ const (
 												VALUES($1, $2, $3, $4) RETURNING id`
 	psqlGetAllProducts = `SELECT id, name, observations, price, created_at, updated_at
 												FROM products`
-	psqlGetProductById = psqlGetAllProducts + " WHERE id = $1"
+	psqlGetProductByID = psqlGetAllProducts + " WHERE id = $1"
 	psqlUpdateProduct  = `UPDATE products SET name = $1, observations = $2,
 												price = $3, updated_at = $4 WHERE id = $5`
+	psqlDeleteProduct = `DELETE FROM products WHERE id = $1`
 )
 
-// psqlProduct used for work with postgres - product
+// PsqlProduct used for work with postgres - product
 type PsqlProduct struct {
 	db *sql.DB
 }
@@ -57,6 +58,7 @@ func (p *PsqlProduct) Migrate() error {
 	return nil
 }
 
+// Create implement the interface product.Storage
 func (p *PsqlProduct) Create(m *product.Model) error {
 	stmt, err := p.db.Prepare(psqlCreateProduct)
 
@@ -112,8 +114,9 @@ func (p *PsqlProduct) GetAll() (product.Models, error) {
 	return ms, nil
 }
 
+// GetByID implement the interface product.Storage
 func (p *PsqlProduct) GetByID(id uint) (*product.Model, error) {
-	stmt, err := p.db.Prepare(psqlGetProductById)
+	stmt, err := p.db.Prepare(psqlGetProductByID)
 	if err != nil {
 		return &product.Model{}, err
 	}
@@ -150,6 +153,23 @@ func (p *PsqlProduct) Update(m *product.Model) error {
 		return fmt.Errorf("No existe el producto con id: %d", m.ID)
 	}
 	fmt.Println("Se actualizo el producto correctamente")
+	return nil
+}
+
+// Delete implement the interface product.Storage
+func (p *PsqlProduct) Delete(id uint) error {
+	stmt, err := p.db.Prepare(psqlDeleteProduct)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Se elimino el producto correctamente")
 	return nil
 }
 

@@ -1,6 +1,9 @@
 package invoiceitem
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 // Model of invoiceitem
 type Model struct {
@@ -11,8 +14,13 @@ type Model struct {
 	UpdatedAt       time.Time
 }
 
+// Models slice of Model
+type Models []*Model
+
+// Storage interface that must implement a db storage
 type Storage interface {
 	Migrate() error
+	CreateTx(*sql.Tx, uint, Models) error
 }
 
 // Service of invoiceitems
@@ -25,7 +33,7 @@ func NewService(s Storage) *Service {
 	return &Service{s}
 }
 
-// Migrate is used for migrate product
+// Migrated is used for migrate product
 func (s *Service) Migrated() error {
 	return s.storage.Migrate()
 }
