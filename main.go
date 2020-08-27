@@ -1,9 +1,6 @@
 package main
 
 import (
-	"database/sql"
-	"errors"
-	"fmt"
 	"log"
 
 	"github.com/jhoguer/Bases-de-datos-conGo/pkg/product"
@@ -70,17 +67,29 @@ func main() {
 
 	// fmt.Println(ms)
 
+	// storageProduct := storage.NewPsqlProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
+
+	// m, err := serviceProduct.GetById(10)
+	// switch {
+	// case errors.Is(err, sql.ErrNoRows):
+	// 	fmt.Println("No hay un producto con ese id")
+	// case err != nil:
+	// 	log.Fatalf("product.GetByID: %v", err)
+	// default:
+	// 	fmt.Println(m)
+	// }
+
 	storageProduct := storage.NewPsqlProduct(storage.Pool())
 	serviceProduct := product.NewService(storageProduct)
 
-	m, err := serviceProduct.GetById(10)
-	switch {
-	case errors.Is(err, sql.ErrNoRows):
-		fmt.Println("No hay un producto con ese id")
-	case err != nil:
-		log.Fatalf("product.GetByID: %v", err)
-	default:
-		fmt.Println(m)
+	m := &product.Model{
+		ID:    90,
+		Name:  "Curso de db con Gooooo",
+		Price: 40,
 	}
-
+	err := serviceProduct.Update(m)
+	if err != nil {
+		log.Fatalf("product.Update: %v", err)
+	}
 }
