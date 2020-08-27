@@ -3,7 +3,10 @@ package main
 import (
 	"log"
 
-	"github.com/jhoguer/Bases-de-datos-conGo/pkg/product"
+	"github.com/jhoguer/Bases-de-datos-conGo/pkg/invoiceheader"
+	"github.com/jhoguer/Bases-de-datos-conGo/pkg/invoiceitem"
+
+	"github.com/jhoguer/Bases-de-datos-conGo/pkg/invoice"
 	"github.com/jhoguer/Bases-de-datos-conGo/storage"
 )
 
@@ -93,11 +96,31 @@ func main() {
 	// 	log.Fatalf("product.Update: %v", err)
 	// }
 
-	storageProduct := storage.NewPsqlProduct(storage.Pool())
-	serviceProduct := product.NewService(storageProduct)
+	// storageProduct := storage.NewPsqlProduct(storage.Pool())
+	// serviceProduct := product.NewService(storageProduct)
 
-	err := serviceProduct.Delete(4)
-	if err != nil {
-		log.Fatalf("product.Delete: %v", err)
+	// err := serviceProduct.Delete(4)
+	// if err != nil {
+	// 	log.Fatalf("product.Delete: %v", err)
+	// }
+
+	// Transactions
+	storageHeader := storage.NewPsqlInvoiceHeader(storage.Pool())
+	storageItems := storage.NewPsqlInvoiceItem(storage.Pool())
+	storageInvoice := storage.NewPsqlInvoice(storage.Pool(), storageHeader, storageItems)
+
+	m := &invoice.Model{
+		Header: &invoiceheader.Model{
+			Client: "Thor",
+		},
+		Items: invoiceitem.Models{
+			&invoiceitem.Model{ProductID: 5},
+			&invoiceitem.Model{ProductID: 7},
+			&invoiceitem.Model{ProductID: 99},
+		},
+	}
+	serviceInvoice := invoice.NewService(storageInvoice)
+	if err := serviceInvoice.Create(m); err != nil {
+		log.Fatalf("invoice.Create: %v", err)
 	}
 }

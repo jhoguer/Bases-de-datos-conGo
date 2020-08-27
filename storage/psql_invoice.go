@@ -2,6 +2,7 @@ package storage
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/jhoguer/Bases-de-datos-conGo/pkg/invoice"
 	"github.com/jhoguer/Bases-de-datos-conGo/pkg/invoiceheader"
@@ -35,11 +36,14 @@ func (p *PsqlInvoice) Create(m *invoice.Model) error {
 		tx.Rollback()
 		return err
 	}
+	fmt.Printf("Factura creada con id: %d \n", m.Header.ID)
 
 	if err := p.storageItems.CreateTx(tx, m.Header.ID, m.Items); err != nil {
 		tx.Rollback()
+
 		return err
 	}
+	fmt.Printf("Items de factura creados con id: %d \n", len(m.Items))
 
 	return tx.Commit()
 }

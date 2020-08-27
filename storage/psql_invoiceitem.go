@@ -58,11 +58,14 @@ func (p *PsqlInvoiceItem) CreateTx(tx *sql.Tx, headerID uint, ms invoiceitem.Mod
 	defer stmt.Close()
 
 	for _, item := range ms {
-		err = stmt.QueryRow(headerID, item.ProductID).Scan(
+		row := stmt.QueryRow(headerID, item.ProductID)
+		err = row.Scan(
 			&item.ID,
 			&item.CreatedAt,
 		)
 		if err != nil {
+			fmt.Printf("No se pudo añadir el item %v\n", item.ProductID)
+
 			return err
 		}
 	}
